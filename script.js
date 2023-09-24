@@ -1,51 +1,75 @@
 const arithmetic = {
     numberOne : 0,
     numberTwo : 0,
-    result: [],
+    result : [],
+    level : sessionStorage.getItem("Level") ? Number(sessionStorage.getItem("Level")) :  1,
     points : sessionStorage.getItem("points") ? Number(sessionStorage.getItem("points")) : 0,
     negativePoints : sessionStorage.getItem("neg_points") ? Number(sessionStorage.getItem("neg_points")) : 0,
-    level : sessionStorage.getItem("Level") ? Number(sessionStorage.getItem("Level")) :  1,
+    setLevel : function (lvl) {sessionStorage.setItem("Level",lvl)},
+    setPoints : function (pts) {sessionStorage.setItem("points",pts)},
+    setNegPoints : function (npts) {sessionStorage.setItem("neg_points",npts)},
+    getRandomInteger : function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) ) + min;
+    },
     calculateResult : function() {
-        this.numberOne = this.getRndInteger(1,this.level);
-        this.numberTwo = this.getRndInteger(1,this.level);
+        this.numberOne = this.getRandomInteger(1,this.level*10);
+        this.numberTwo = this.getRandomInteger(1,this.level*10);
         let n1 = this.numberOne;
         let n2 = this.numberTwo;
         let operator;
         let divisionCheck = n1/n2 - Math.trunc(n1/n2);
-        divisionCheck == 0 ?  operator = this.getRndInteger(1,4)
-            : operator = this.getRndInteger(1,3);
+        divisionCheck == 0 ?  operator = this.getRandomInteger(1,4)
+            : operator = this.getRandomInteger(1,3);
         operator == 1 ? this.result = ["+",n1 + n2]
             : operator == 2 ? this.result = ["-",n1 - n2]
                 : operator == 3 ? this.result = ["*",n1 * n2]
                     : this.result = ["/",n1 / n2];
         return this.result[1];
     },
-    setPoints : function (pts) {sessionStorage.setItem("points",pts)},
-    setNegPoints : function (npts) {sessionStorage.setItem("neg_points",npts)},
-    setLevel : function (lvl) {sessionStorage.setItem("Level",lvl)},
     calculateLevel : function () {
-        let pointsPerLevel = this.level + 1;
+        let pointsPerLevel = this.level * 10;
         if (this.points == pointsPerLevel) {
-            this.level += 1;
-            this.points = 0;
-            this.negativePoints = 0;
-            this.setPoints(this.points);
-            this.setNegPoints(this.negativePoints);
-            this.setLevel(this.level);
-        } else if (this.negativePoints == pointsPerLevel) {
+            if (this.level == 10) {
+                this.gameWon();
+            } else {
+                this.level += 1;
+                this.points = 0;
+                this.negativePoints = 0;
+                this.setLevel(this.level);
+                this.setPoints(this.points);
+                this.setNegPoints(this.negativePoints);
+                }
+        } else if (this.negativePoints >= 3) {
             if (this.level < 2) {
-                this.level = 1;
-            } else this.level -= 1;
-            this.points = 0;
-            this.negativePoints = 0;
-            this.setPoints(this.points);
-            this.setNegPoints(this.negativePoints);
-            this.setLevel(this.level);
+                this.gameFailed();
+            } else {
+                this.level -= 1;
+                this.points = 0;
+                this.negativePoints = 0;
+                this.setLevel(this.level);
+                this.setPoints(this.points);
+                this.setNegPoints(this.negativePoints);
+                }
         }
     },
-    getRndInteger : function(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) ) + min;
+    gameWon : function () {
+        this.level = 1;
+        this.points = 0;
+        this.negativePoints = 0;
+        this.setLevel(this.level);
+        this.setPoints(this.points);
+        this.setNegPoints(this.negativePoints);
+        location.replace("./game-won.html")      
     },
+    gameFailed : function () {
+        this.level = 1;
+        this.points = 0;
+        this.negativePoints = 0;
+        this.setLevel(this.level);
+        this.setPoints(this.points);
+        this.setNegPoints(this.negativePoints);
+        location.replace("./game-failed.html")       
+    }
 }
 
 function userInput(event) {
