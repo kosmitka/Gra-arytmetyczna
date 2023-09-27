@@ -1,6 +1,7 @@
 const arithmetic = {
     numberOne : 0,
     numberTwo : 0,
+    numberThree: null,
     result : [],
     level : sessionStorage.getItem("Level") ? Number(sessionStorage.getItem("Level")) :  1,
     points : sessionStorage.getItem("points") ? Number(sessionStorage.getItem("points")) : 0,
@@ -72,15 +73,16 @@ const arithmetic = {
     }
 }
 
-function userInput(event) {
-    let userInputNumber = event.target.value;
+
+function userInputFinal(event) {
+    let userInputNumber = event.target.value || arithmetic.numberThree;
     if (userInputNumber == arithmetic.result[1]) {
         arithmetic.points += 1;
         arithmetic.setPoints(arithmetic.points);
         arithmetic.calculateLevel();
         mathResult.innerText = userInputNumber;
-        userPoints.innerText = "Points: " + arithmetic.points;
-        userLevel.innerText = "Level: " + arithmetic.level;
+        userPoints.innerText = "Punkty: " + arithmetic.points;
+        userLevel.innerText = "Poziom: " + arithmetic.level;
         setTimeout(() => {
             location.reload();
         }, 1000);
@@ -89,12 +91,50 @@ function userInput(event) {
         arithmetic.setNegPoints(arithmetic.negativePoints);
         arithmetic.calculateLevel();
         mathResult.innerText = "?";
-        userPoints.innerText = "Points: " + arithmetic.points;
-        userLevel.innerText = "Level: " + arithmetic.level;
+        userPoints.innerText = "Punkty: " + arithmetic.points;
+        userLevel.innerText = "Poziom: " + arithmetic.level;
         setTimeout(() => {
             location.reload();
         }, 1000);
     }
+}
+function userInput(event) {
+    arithmetic.numberThree = event.target.value;
+    console.log(arithmetic.numberThree);
+}
+function keyboardButton(number) {
+    console.log(arithmetic.numberThree);
+    arithmetic.numberThree == null ? arithmetic.numberThree = number : arithmetic.numberThree = arithmetic.numberThree + `${number}`;
+    document.querySelector('input').value = arithmetic.numberThree;
+    console.log(number, arithmetic.numberThree);
+}
+function minusButton () {
+    if (arithmetic.numberThree == null) {
+        arithmetic.numberThree = '-';
+        document.querySelector('input').value = arithmetic.numberThree;
+        console.log(arithmetic.numberThree);
+    } else if (arithmetic.numberThree[0] != '-') {
+        arithmetic.numberThree = '-' + arithmetic.numberThree;
+        document.querySelector('input').value = arithmetic.numberThree;
+        console.log(arithmetic.numberThree);
+        }
+}
+function plusButton() {
+    if (arithmetic.numberThree[0] == '-') {
+        arithmetic.numberThree = arithmetic.numberThree.slice(1);
+        document.querySelector('input').value = arithmetic.numberThree;
+        console.log(arithmetic.numberThree);
+        }
+}
+function deleteInput() {
+    document.querySelector('input').value = '';
+    arithmetic.numberThree = '';
+    console.log(arithmetic.numberThree);
+}
+function exitGame() {
+    arithmetic.setLevel(1);
+    arithmetic.setPoints(0);
+    arithmetic.setNegPoints(0);
 }
 
 const firstNumber = document.getElementById('first_number');
@@ -109,7 +149,23 @@ firstNumber.innerText = arithmetic.numberOne;
 secondNumber.innerText = arithmetic.numberTwo;
 mathOperation.innerText = arithmetic.result[0];
 mathResult.innerText = "?";
-userPoints.innerText = "Points: " + arithmetic.points;
-userLevel.innerText = "Level: " + arithmetic.level;
-document.querySelector('input').addEventListener('change',userInput);
+userPoints.innerText = "Punkty: " + arithmetic.points;
+userLevel.innerText = "Poziom: " + arithmetic.level;
+document.querySelector('input').addEventListener('change',userInputFinal);
+document.querySelector('input').addEventListener('input',userInput);
 document.querySelector('input').focus();
+document.getElementById("X").addEventListener('click', deleteInput);
+document.getElementById("OK").addEventListener('click', userInputFinal);
+document.getElementById("1").addEventListener('click', function() {keyboardButton(1)});
+document.getElementById("2").addEventListener('click', function() {keyboardButton(2)});
+document.getElementById("3").addEventListener('click', function() {keyboardButton(3)});
+document.getElementById("4").addEventListener('click', function() {keyboardButton(4)});
+document.getElementById("5").addEventListener('click', function() {keyboardButton(5)});
+document.getElementById("6").addEventListener('click', function() {keyboardButton(6)});
+document.getElementById("7").addEventListener('click', function() {keyboardButton(7)});
+document.getElementById("8").addEventListener('click', function() {keyboardButton(8)});
+document.getElementById("9").addEventListener('click', function() {keyboardButton(9)});
+document.getElementById("0").addEventListener('click', function() {keyboardButton(0)});
+document.getElementById("-").addEventListener('click', minusButton);
+document.getElementById("+").addEventListener('click', plusButton);
+document.getElementById("exit").addEventListener('click', exitGame);

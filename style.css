@@ -1,27 +1,70 @@
 body {
     display: flex;
     flex-direction: column;
-    justify-content: start;
     align-items: center;
     margin: 0;
     padding: 0;
+    font-family:'Courier New', Courier, monospace;
 }
-#top {
+button {
+    background-color: darkseagreen;
+    border-width: 1px;
+    border-radius: 10px;
+    border-color: rgb(219, 240, 219) rgba(143, 188, 143, 0.623);
+    padding: 5px 10px;
+    margin: 2px 10px;
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+input {
+    background-color: white;
+    border-width: 1px;
+    border-radius: 10px;
+    border-color: rgb(219, 240, 219) rgba(143, 188, 143, 0.623);
+    padding: 5px 10px;
+    margin: 2px 10px;
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+ul {
+    text-align: start;
+}
+#top_game {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     background-color: aquamarine;
+    font-weight: bold;
 }
-#main {
+#main_game {
     display: grid;
     grid-template-columns: 50% 50%;
     grid-template-rows: 30% 30% 10% 30%;
     background-color: lightseagreen;
     font-size: 30px;
+    font-weight: bold;
+    }
+#bottom_game {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: aquamarine;
+}
+#top {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    background-color: aquamarine;
+}
+#main {
+    display: block;
+    background-color: lightseagreen;
     }
 #bottom {
     display: flex;
+    justify-content: space-around;
     background-color: aquamarine;
 }
 #math_operation {
@@ -44,9 +87,16 @@ body {
     grid-column: 1 / span 2;
     grid-row: 3 / 3;
 }
+#keyboard { 
+    display: grid;
+    width: 30%;
+    justify-items: center;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: 25% 25% 25% 25%;
+}
 .main_div {
     width: 50%;
+    min-width: 500px;
     text-align: center;
-    justify-content: center;
     padding: 10px;
 }
