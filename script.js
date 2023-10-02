@@ -6,11 +6,25 @@ const arithmetic = {
     level : sessionStorage.getItem("Level") ? Number(sessionStorage.getItem("Level")) :  1,
     points : sessionStorage.getItem("points") ? Number(sessionStorage.getItem("points")) : 0,
     negativePoints : sessionStorage.getItem("neg_points") ? Number(sessionStorage.getItem("neg_points")) : 0,
-    setLevel : function (lvl) {sessionStorage.setItem("Level",lvl)},
-    setPoints : function (pts) {sessionStorage.setItem("points",pts)},
-    setNegPoints : function (npts) {sessionStorage.setItem("neg_points",npts)},
+    setLevel : function (lvl) {
+        sessionStorage.setItem("Level",lvl)
+    },
+    setPoints : function (pts) {
+        sessionStorage.setItem("points",pts)
+    },
+    setNegPoints : function (npts) {
+        sessionStorage.setItem("neg_points",npts)
+    },
     getRandomInteger : function(min, max) {
         return Math.floor(Math.random() * (max - min + 1) ) + min;
+    },
+    changeGameData : function (lev,pts,negpts) {
+        this.level = lev;
+        this.points = pts;
+        this.negativePoints = negpts;
+        this.setLevel(this.level);
+        this.setPoints(this.points);
+        this.setNegPoints(this.negativePoints);
     },
     calculateResult : function() {
         this.numberOne = this.getRandomInteger(1,this.level*10);
@@ -30,51 +44,34 @@ const arithmetic = {
     calculateLevel : function () {
         let pointsPerLevel = this.level * 10;
         if (this.points == pointsPerLevel) {
-            if (this.level == 10) {
+            if (this.level >= 10) {
                 this.gameWon();
             } else {
-                this.level += 1;
-                this.points = 0;
-                this.negativePoints = 0;
-                this.setLevel(this.level);
-                this.setPoints(this.points);
-                this.setNegPoints(this.negativePoints);
+                this.changeGameData(this.level + 1,0,0);
                 }
         } else if (this.negativePoints >= 3) {
             if (this.level < 2) {
                 this.gameFailed();
             } else {
-                this.level -= 1;
-                this.points = 0;
-                this.negativePoints = 0;
-                this.setLevel(this.level);
-                this.setPoints(this.points);
-                this.setNegPoints(this.negativePoints);
+                this.changeGameData(this.level - 1,0,0);
                 }
         }
     },
     gameWon : function () {
-        this.level = 1;
-        this.points = 0;
-        this.negativePoints = 0;
-        this.setLevel(this.level);
-        this.setPoints(this.points);
-        this.setNegPoints(this.negativePoints);
+        this.changeGameData(1,0,0);
         location.replace("./game-won.html")      
     },
     gameFailed : function () {
-        this.level = 1;
-        this.points = 0;
-        this.negativePoints = 0;
-        this.setLevel(this.level);
-        this.setPoints(this.points);
-        this.setNegPoints(this.negativePoints);
+        this.changeGameData(1,0,0);
         location.replace("./game-failed.html")       
     }
 }
 
 
-function userInputFinal(event) {
+function updateUserInputNumber(event) {
+    arithmetic.numberThree = event.target.value;
+}
+function changeUserInputNumber(event) {
     let userInputNumber = event.target.value || arithmetic.numberThree;
     if (userInputNumber == arithmetic.result[1]) {
         arithmetic.points += 1;
@@ -98,43 +95,31 @@ function userInputFinal(event) {
         }, 1000);
     }
 }
-function userInput(event) {
-    arithmetic.numberThree = event.target.value;
-    console.log(arithmetic.numberThree);
-}
-function keyboardButton(number) {
-    console.log(arithmetic.numberThree);
+function updateUserNumberFromButton(number) {
     arithmetic.numberThree == null ? arithmetic.numberThree = number : arithmetic.numberThree = arithmetic.numberThree + `${number}`;
-    document.querySelector('input').value = arithmetic.numberThree;
-    console.log(number, arithmetic.numberThree);
+    userInputNumber.value = arithmetic.numberThree;
 }
-function minusButton () {
+function makeUserNumberNegative () {
     if (arithmetic.numberThree == null) {
         arithmetic.numberThree = '-';
-        document.querySelector('input').value = arithmetic.numberThree;
-        console.log(arithmetic.numberThree);
+        userInputNumber.value = arithmetic.numberThree;
     } else if (arithmetic.numberThree[0] != '-') {
         arithmetic.numberThree = '-' + arithmetic.numberThree;
-        document.querySelector('input').value = arithmetic.numberThree;
-        console.log(arithmetic.numberThree);
+        userInputNumber.value = arithmetic.numberThree;
         }
 }
-function plusButton() {
+function makeUserNumberPositive() {
     if (arithmetic.numberThree[0] == '-') {
         arithmetic.numberThree = arithmetic.numberThree.slice(1);
-        document.querySelector('input').value = arithmetic.numberThree;
-        console.log(arithmetic.numberThree);
+        userInputNumber.value = arithmetic.numberThree;
         }
 }
-function deleteInput() {
-    document.querySelector('input').value = '';
+function deleteUserInputNumber() {
+    userInputNumber.value = '';
     arithmetic.numberThree = '';
-    console.log(arithmetic.numberThree);
 }
 function exitGame() {
-    arithmetic.setLevel(1);
-    arithmetic.setPoints(0);
-    arithmetic.setNegPoints(0);
+    arithmetic.changeGameData(1,0,0);
 }
 
 const firstNumber = document.getElementById('first_number');
@@ -143,29 +128,32 @@ const mathResult = document.getElementById('math_result');
 const mathOperation = document.getElementById('math_operation');
 const userPoints = document.getElementById('points');
 const userLevel = document.getElementById('level');
+const userInputNumber = document.querySelector('input');
 
-arithmetic.calculateResult();
-firstNumber.innerText = arithmetic.numberOne;
-secondNumber.innerText = arithmetic.numberTwo;
-mathOperation.innerText = arithmetic.result[0];
-mathResult.innerText = "?";
-userPoints.innerText = "Punkty: " + arithmetic.points;
-userLevel.innerText = "Poziom: " + arithmetic.level;
-document.querySelector('input').addEventListener('change',userInputFinal);
-document.querySelector('input').addEventListener('input',userInput);
-document.querySelector('input').focus();
-document.getElementById("X").addEventListener('click', deleteInput);
-document.getElementById("OK").addEventListener('click', userInputFinal);
-document.getElementById("1").addEventListener('click', function() {keyboardButton(1)});
-document.getElementById("2").addEventListener('click', function() {keyboardButton(2)});
-document.getElementById("3").addEventListener('click', function() {keyboardButton(3)});
-document.getElementById("4").addEventListener('click', function() {keyboardButton(4)});
-document.getElementById("5").addEventListener('click', function() {keyboardButton(5)});
-document.getElementById("6").addEventListener('click', function() {keyboardButton(6)});
-document.getElementById("7").addEventListener('click', function() {keyboardButton(7)});
-document.getElementById("8").addEventListener('click', function() {keyboardButton(8)});
-document.getElementById("9").addEventListener('click', function() {keyboardButton(9)});
-document.getElementById("0").addEventListener('click', function() {keyboardButton(0)});
-document.getElementById("-").addEventListener('click', minusButton);
-document.getElementById("+").addEventListener('click', plusButton);
-document.getElementById("exit").addEventListener('click', exitGame);
+if (firstNumber) {
+    arithmetic.calculateResult();
+    firstNumber.innerText = arithmetic.numberOne;
+    secondNumber.innerText = arithmetic.numberTwo;
+    mathOperation.innerText = arithmetic.result[0];
+    mathResult.innerText = "?";
+    userPoints.innerText = "Punkty: " + arithmetic.points;
+    userLevel.innerText = "Poziom: " + arithmetic.level;
+    userInputNumber.addEventListener('change',changeUserInputNumber);
+    userInputNumber.addEventListener('input',updateUserInputNumber);
+    userInputNumber.focus();
+    document.getElementById("X").addEventListener('click', deleteUserInputNumber);
+    document.getElementById("OK").addEventListener('click', changeUserInputNumber);
+    document.getElementById("1").addEventListener('click', function() {updateUserNumberFromButton(1)});
+    document.getElementById("2").addEventListener('click', function() {updateUserNumberFromButton(2)});
+    document.getElementById("3").addEventListener('click', function() {updateUserNumberFromButton(3)});
+    document.getElementById("4").addEventListener('click', function() {updateUserNumberFromButton(4)});
+    document.getElementById("5").addEventListener('click', function() {updateUserNumberFromButton(5)});
+    document.getElementById("6").addEventListener('click', function() {updateUserNumberFromButton(6)});
+    document.getElementById("7").addEventListener('click', function() {updateUserNumberFromButton(7)});
+    document.getElementById("8").addEventListener('click', function() {updateUserNumberFromButton(8)});
+    document.getElementById("9").addEventListener('click', function() {updateUserNumberFromButton(9)});
+    document.getElementById("0").addEventListener('click', function() {updateUserNumberFromButton(0)});
+    document.getElementById("-").addEventListener('click', makeUserNumberNegative);
+    document.getElementById("+").addEventListener('click', makeUserNumberPositive);
+    document.getElementById("exit").addEventListener('click', exitGame);
+}
