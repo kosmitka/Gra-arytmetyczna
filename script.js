@@ -109,7 +109,7 @@ function makeUserNumberNegative () {
         }
 }
 function makeUserNumberPositive() {
-    if (arithmetic.numberThree[0] == '-') {
+    if (arithmetic.numberThree && arithmetic.numberThree[0] == '-') {
         arithmetic.numberThree = arithmetic.numberThree.slice(1);
         userInputNumber.value = arithmetic.numberThree;
         }
@@ -118,8 +118,14 @@ function deleteUserInputNumber() {
     userInputNumber.value = '';
     arithmetic.numberThree = '';
 }
+function toggleButtonStyle(element) {
+    element.className == null ? element.className = 'pressed_button'
+        : element.className == 'pressed_button' ? element.className = null
+            : element.className = 'pressed_button'
+}
 function exitGame() {
     arithmetic.changeGameData(1,0,0);
+    location.replace("./index.html")  
 }
 
 const firstNumber = document.getElementById('first_number');
@@ -129,6 +135,13 @@ const mathOperation = document.getElementById('math_operation');
 const userPoints = document.getElementById('points');
 const userLevel = document.getElementById('level');
 const userInputNumber = document.querySelector('input');
+const buttons = document.getElementsByTagName('button');
+
+for (let i = 0; i < buttons.length; i++) {
+    const arrayElement = buttons[i];
+    arrayElement.addEventListener('mousedown', function() {toggleButtonStyle(arrayElement)});
+    arrayElement.addEventListener('mouseup', function() {toggleButtonStyle(arrayElement)});   
+}
 
 if (firstNumber) {
     arithmetic.calculateResult();
