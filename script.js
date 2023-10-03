@@ -67,7 +67,29 @@ const arithmetic = {
     }
 }
 
-
+function startTimer() {
+    let time = 20000 - (arithmetic.level - 1) * 1000;
+    let animationDuration = `animation-duration: ${time / 1000}s`;
+    const timerName = document.createElement('div');
+    const timerBar = document.createElement('div');
+    timer.appendChild(timerName);
+    timerName.innerText = 'Czas:';
+    timer.appendChild(timerBar);
+    timerBar.innerText = ' ';
+    timerBar.className = 'timer_bar';
+    timerBar.setAttribute('style', animationDuration);
+    setTimeout(() => {
+        arithmetic.negativePoints += 1;
+        arithmetic.setNegPoints(arithmetic.negativePoints);
+        arithmetic.calculateLevel();
+        mathResult.innerText = "?";
+        userPoints.innerText = "Punkty: " + arithmetic.points;
+        userLevel.innerText = "Poziom: " + arithmetic.level;
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }, time);
+}
 function updateUserInputNumber(event) {
     arithmetic.numberThree = event.target.value;
 }
@@ -134,6 +156,7 @@ const mathResult = document.getElementById('math_result');
 const mathOperation = document.getElementById('math_operation');
 const userPoints = document.getElementById('points');
 const userLevel = document.getElementById('level');
+const timer = document.getElementById('timer');
 const userInputNumber = document.querySelector('input');
 const buttons = document.getElementsByTagName('button');
 
@@ -154,6 +177,7 @@ if (firstNumber) {
     userInputNumber.addEventListener('change',changeUserInputNumber);
     userInputNumber.addEventListener('input',updateUserInputNumber);
     userInputNumber.focus();
+    window.addEventListener('load',startTimer);
     document.getElementById("X").addEventListener('click', deleteUserInputNumber);
     document.getElementById("OK").addEventListener('click', changeUserInputNumber);
     document.getElementById("1").addEventListener('click', function() {updateUserNumberFromButton(1)});

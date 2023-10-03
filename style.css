@@ -50,6 +50,21 @@ h1,h3 {
     background-color: aquamarine;
     font-weight: bold;
 }
+@keyframes timer_bar_animation {
+    from {width: 100px;}
+    to {width: 0;}
+}
+#timer {
+    width: 100px;
+}
+.timer_bar {
+    position:inherit;
+    left: 0;
+    height: 7px;
+    background-color: blueviolet;
+    animation-name: timer_bar_animation;
+    animation-timing-function: linear;
+}
 #main_game {
     display: grid;
     grid-template-columns: 50% 50%;
